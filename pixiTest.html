@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>PixiJS Moving Sprites</title>
+
+<body style="margin:0;background:#111;">
+    <canvas id="view"></canvas>
+
+    <script type="module">
+        import * as PIXI from "https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.min.mjs";
+
+        // アプリ作成 → init を await してから利用する
+        const app = new PIXI.Application();
+        await app.init({
+            view: document.getElementById("view"),
+            resizeTo: window,
+            antialias: false,
+            background: 0xffffff,//0x101010,
+        });
+
+        // ------------------------------
+        // スーパークラス（エフェクト基底）
+        // ------------------------------
+        class Effect extends PIXI.Sprite {
+            constructor(texture) {
+                super(texture);
+                this.anchor.set(0.5);
+                this.vx = (Math.random() - 0.5) * 6;
+                this.vy = (Math.random() - 0.5) * 6;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+                this.scale.set(0.6 + Math.random() * 0.8);
+            }
+
+            update(bounds) {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+
+                if (this.x < 0 || this.x > bounds.w) this.vx *= -1;
+                if (this.y < 0 || this.y > bounds.h) this.vy *= -1;
+            }
+        }
+
+        // ------------------------------
+        // テクスチャを1枚だけ用意（バッチ維持）
+        // ------------------------------
+        const texture = PIXI.Texture.from("https://pixijs.com/assets/bunny.png");
+
+        const effects = [];
+        const MAX = 300;
+
+        for (let i = 0; i < MAX; i++) {
+            const e = new Effect(texture);
+
+            // ★ init 後なので renderer.width / height が安全に使える
+            e.x = Math.random() * app.renderer.width;
+            e.y = Math.random() * app.renderer.height;
+
+            effects.push(e);
+            app.stage.addChild(e);
+        }
+
+        // ------------------------------
+        // メインループ
+        // ------------------------------
+        app.ticker.add(() => {
+            const bounds = { w: app.renderer.width, h: app.renderer.height };
+            for (const e of effects) e.update(bounds);
+        });
+    </script>
+</body>

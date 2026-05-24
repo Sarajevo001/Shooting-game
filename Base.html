@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    #crop-area {
+      width: 200px;
+      /* 表示領域の幅 */
+      height: 200px;
+      /* 表示領域の高さ */
+      overflow: hidden;
+      /*background-image: url('スクリーンショット 2025-10-17 172319.png');*/
+      /* 画像のパス */
+      background-repeat: no-repeat;
+      background-size: auto;
+      /* 元画像サイズを維持 */
+      border: 1px solid #333;
+    }
+  </style>
+
+  <script type="module">
+    import { Base } from './Base.js';
+    const base = new Base();
+  </script>
+
+  <head>
+
+  <body>
+    <canvas id="game" width="500" height="500"></canvas>
+    <div id="crop-area"></div>
+  </body>
+
+</html>
